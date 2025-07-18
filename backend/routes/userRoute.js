@@ -6,5 +6,8 @@ const userRouter = express.Router();
 userRouter.post('/register',registerUser)
 userRouter.post('/login',loginUser)
 userRouter.post('/admin',adminLogin)
+userRouter.get('/', (req, res) => {
+  res.json({ message: 'User API is working!' });
+});
 
 export default userRouter;
