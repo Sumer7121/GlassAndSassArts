@@ -1,4 +1,4 @@
-import { client } from '../config/paypal.js';
+/*import { client } from '../config/paypal.js';
 import checkoutNodeJssdk from '@paypal/checkout-server-sdk';
 
 export default async function handler(req, res) {
@@ -36,4 +36,4 @@ export default async function handler(req, res) {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-}
+}*/
