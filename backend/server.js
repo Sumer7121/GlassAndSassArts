@@ -17,13 +17,7 @@ connectCloudinary()
 
 // middlewares
 app.use(express.json())
-const cors = require('cors');
-
-app.use(cors({
-  origin: ['https://glass-and-sass-arts-webpage.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
+app.use(cors())
 
 // api endpoints
 app.use('/api/user',userRouter)
