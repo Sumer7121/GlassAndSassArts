@@ -10,12 +10,6 @@ const OurPolicy = () => {
         <p className=' font-semibold'>No Exchange Policy</p>
         <p className=' text-gray-400'>We do not offer exchange policy</p>
       </div>
-      
-      <div>
-        <img src={assets.support_img} className='w-12 m-auto mb-5' alt="" />
-        <p className=' font-semibold'>Best customer support</p>
-        <p className=' text-gray-400'>we provide 24/7 customer support</p>
-      </div>
 
     </div>
   )
