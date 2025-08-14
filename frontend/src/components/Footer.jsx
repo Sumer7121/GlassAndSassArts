@@ -16,8 +16,8 @@ const Footer = () => {
         <div>
           <p className='text-xl font-medium mb-5'>COMPANY</p>
           <ul className='flex flex-col gap-1 text-gray-600'>
-            <li><a href="/" className="hover:underline">Home</a></li>
-            <li><a href="/about" className="hover:underline">About us</a></li>
+            <li>Home</li>
+            <li>About us</li>
             <li>Privacy policy</li>
           </ul>
         </div>
