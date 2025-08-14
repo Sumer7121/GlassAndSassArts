@@ -136,7 +136,6 @@ const About = () => {
           </div>
         </div>
       </div>
-      <NewsletterBox />
     </div>
   )
 }
