@@ -3,7 +3,7 @@ import { assets } from '../assets/assets'
 
 const OurPolicy = () => {
   return (
-    
+    null
   )
 }
 
