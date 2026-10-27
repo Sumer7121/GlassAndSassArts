@@ -9,7 +9,7 @@ const Footer = () => {
         <div>
           <img src={assets.logo} className='mb-5 w-32' alt="" />
           <p className='w-full md:w-2/3 text-gray-600'>
-            “At Artisan Gallery, we celebrate creativity and craftsmanship. Each piece in our collection tells a unique story — from vibrant glass art to timeless woodturnings. Our passion is to bring you exceptional handmade art that inspires and transforms your space.”
+            Glass & Sass Arts brings together handcrafted fused-glass art, woodturnings, and mixed-media pieces. Explore one-of-a-kind work made in the studio.
           </p>
         </div>
 

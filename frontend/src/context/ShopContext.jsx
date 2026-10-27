@@ -6,9 +6,9 @@ import axios from 'axios';
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
-  const currency = '$';
-  const delivery_fee = 10;
-  const backendUrl = import.meta.env.VITE_BACKEND_URL.replace(/\/$/, '');
+  const currency = import.meta.env.VITE_CURRENCY_SYMBOL || '$';
+  const delivery_fee = Number(import.meta.env.VITE_DELIVERY_FEE || 10);
+  const backendUrl = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/+$/, '');
 
   const [search, setSearch] = useState('');
   const [showSearch, setShowSearch] = useState(false);

@@ -1,14 +1,13 @@
 import React, { useContext, useState } from 'react'
-import PayPalButton from '../components/PayPalButton';
 import Title from '../components/Title'
 import CartTotal from '../components/CartTotal'
-import { assets } from '../assets/assets'
 import { ShopContext } from '../context/ShopContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
 const PlaceOrder = () => {
-    const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
+    const { backendUrl, token, cartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const [formData, setFormData] = useState({
         firstName: '',
@@ -30,13 +29,16 @@ const PlaceOrder = () => {
 
     const onSubmitHandler = async (event) => {
         event.preventDefault()
+        if (isSubmitting) return
         try {
+            setIsSubmitting(true)
             let orderItems = []
 
             for (const items in cartItems) {
                 for (const item in cartItems[items]) {
                     if (cartItems[items][item] > 0) {
-                        const itemInfo = structuredClone(products.find(product => product._id === items))
+                        const product = products.find(product => product._id === items)
+                        const itemInfo = product ? { ...product } : null
                         if (itemInfo) {
                             itemInfo.size = item
                             itemInfo.quantity = cartItems[items][item]
@@ -52,26 +54,19 @@ const PlaceOrder = () => {
                 amount: getCartAmount() + delivery_fee
             }
 
-            const response = await axios.post(`${backendUrl}/api/order/paypal`, orderData, { headers: { token } })
+            const response = await axios.post(`${backendUrl}/api/order/stripe`, orderData, { headers: { token } })
             if (response.data.success) {
-                const { approvalUrl } = response.data
-                window.location.href = approvalUrl
+                window.location.assign(response.data.sessionUrl)
             } else {
-                toast.error(response.data.message || "Failed to initiate PayPal payment")
+                toast.error(response.data.message || "Could not start secure checkout")
             }
 
         } catch (error) {
-            console.log(error)
-            toast.error(error.message)
+            toast.error(error.response?.data?.message || error.message || "Could not start secure checkout")
+        } finally {
+            setIsSubmitting(false)
         }
     }
-
-    const handlePayPalSuccess = (details) => {
-        // You can handle order completion here (e.g., show a message, clear cart, redirect, etc.)
-        toast.success('Payment successful!');
-        setCartItems({});
-        navigate('/orders');
-    };
 
     return (
         <form onSubmit={onSubmitHandler} className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
@@ -108,16 +103,14 @@ const PlaceOrder = () => {
                     <div className='flex gap-3 flex-col lg:flex-row'>
                         <div className='flex items-center gap-3 border p-2 px-3'>
                             <p className={`min-w-3.5 h-3.5 border rounded-full bg-green-400`}></p>
-                            <img className='h-5 mx-2' src={assets.paypal_logo} alt="PayPal" />
-                            <span className='font-medium text-base'>PayPal</span>
+                            <span className='font-medium text-base'>Secure card checkout</span>
                         </div>
                     </div>
 
                     <div className='w-full text-end mt-8'>
-                        <button type='submit' className='bg-black text-white px-16 py-3 text-sm'>PLACE ORDER</button>
-                    </div>
-                    <div className='w-full mt-6'>
-                        <PayPalButton amount={(getCartAmount() + delivery_fee).toFixed(2)} onSuccess={handlePayPalSuccess} />
+                        <button type='submit' disabled={isSubmitting} className='bg-black text-white px-16 py-3 text-sm disabled:opacity-60'>
+                            {isSubmitting ? 'REDIRECTING…' : 'CONTINUE TO PAYMENT'}
+                        </button>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,86 @@
+previews:
+  generation: off
+
+services:
+  - type: web
+    name: glass-and-sass-api
+    runtime: node
+    plan: free
+    region: virginia
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: e-commerce
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CLOUDINARY_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_SECRET_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: glass-and-sass-site
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: ADMIN_URL
+        fromService:
+          type: web
+          name: glass-and-sass-admin
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: CURRENCY
+        value: usd
+      - key: DELIVERY_FEE
+        value: "10"
+
+  - type: web
+    name: glass-and-sass-site
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_BACKEND_URL
+        fromService:
+          type: web
+          name: glass-and-sass-api
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: VITE_CURRENCY_SYMBOL
+        value: "$"
+      - key: VITE_DELIVERY_FEE
+        value: "10"
+
+  - type: web
+    name: glass-and-sass-admin
+    runtime: static
+    rootDir: admin
+    buildCommand: npm ci && npm run build
+    staticPublishPath: admin/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_BACKEND_URL
+        fromService:
+          type: web
+          name: glass-and-sass-api
+          envVarKey: RENDER_EXTERNAL_URL
